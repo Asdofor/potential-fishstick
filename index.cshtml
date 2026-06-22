@@ -1,32 +1,49 @@
-@model IEnumerable<EducationalMonitoringSystem.Models.Grade>
-
+@model IEnumerable<EducationalMonitoringSystem.Models.Student>
 @{
-    ViewData["Title"] = "Ведомость оценок";
+    ViewData["Title"] = "Аналитические отчеты";
+    var grades = ViewBag.Grades as List<EducationalMonitoringSystem.Models.Grade> ?? new List<EducationalMonitoringSystem.Models.Grade>();
 }
 
 <div class="container mt-4">
-    <h2>Электронная ведомость оценок группы оБ-531-ПИ</h2>
-    
-    <table class="table table-bordered table-striped mt-3">
-        <thead class="table-success">
+    <h2>Аналитический отчет успеваемости</h2>
+    <p class="text-muted">Автоматический расчет среднего балла и определение зон риска студентов.</p>
+
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-warning">
             <tr>
-                <th>Студент (Зачетка)</th>
-                <th>Дисциплина</th>
-                <th>Дата</th>
-                <th>Оценка</th>
+                <th>Номер зачетки</th>
+                <th>ФИО Студента</th>
+                <th>Средний балл</th>
+                <th>Статус риска</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var student in Model)
             {
+                var studentGrades = grades.Where(g => g.StudentId == student.Id).Select(g => g.Value).ToList();
+                double avgGrade = studentGrades.Any() ? studentGrades.Average() : 0.0;
+                
                 <tr>
-                    <td>@item.Student?.LastName @item.Student?.FirstName (@item.Student?.StudentCardNumber)</td>
-                    <td>@item.Subject?.Name</td>
-                    <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                    <td><strong>@student.StudentCardNumber</strong></td>
+                    <td>@student.LastName @student.FirstName @student.MiddleName</td>
+                    <td>@(avgGrade > 0 ? avgGrade.ToString("0.00") : "Нет оценок")</td>
                     <td>
-                        <span class="badge @(item.Value >= 4 ? "bg-success" : "bg-warning text-dark") p-2 fs-6">
-                            @item.Value
-                        </span>
+                        @if (avgGrade >= 4.5)
+                        {
+                            <span class="badge bg-success">Отличник</span>
+                        }
+                        else if (avgGrade >= 3.5)
+                        {
+                            <span class="badge bg-info text-dark">Стабильно</span>
+                        }
+                        else if (avgGrade > 0)
+                        {
+                            <span class="badge bg-danger">В зоне риска (Низкий балл)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Данные отсутствуют</span>
+                        }
                     </td>
                 </tr>
             }

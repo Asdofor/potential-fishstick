@@ -1,0 +1,39 @@
+@model IEnumerable<EducationalMonitoringSystem.Models.Student>
+
+@{
+    ViewData["Title"] = "Список студентов";
+}
+
+<div class="container mt-4">
+    <h2>Мониторинг образовательного процесса: Студенты группы оБ-531-ПИ</h2>
+
+    <form method="get" action="@Url.Action("Index", "Students")" class="row g-3 my-3">
+        <div class="col-auto">
+            <input type="text" name="searchCard" class="form-control" placeholder="Введите номер зачетки...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Найти</button>
+            <a href="@Url.Action("Index", "Students")" class="btn bg-secondary text-white">Сбросить</a>
+        </div>
+    </form>
+
+    <table class="table table-hover table-bordered mt-3">
+        <thead class="table-primary">
+            <tr>
+                <th>ФИО Студента</th>
+                <th>Номер зачетной книжки</th>
+                <th>Группа</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.LastName @item.FirstName @item.MiddleName</td>
+                    <td><strong>@item.StudentCardNumber</strong></td>
+                    <td><span class="badge bg-secondary">@item.Group?.Name</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
