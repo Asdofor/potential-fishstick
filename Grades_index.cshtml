@@ -1,0 +1,35 @@
+@model IEnumerable<EducationalMonitoringSystem.Models.Grade>
+
+@{
+    ViewData["Title"] = "Ведомость оценок";
+}
+
+<div class="container mt-4">
+    <h2>Электронная ведомость оценок группы оБ-531-ПИ</h2>
+    
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-success">
+            <tr>
+                <th>Студент (Зачетка)</th>
+                <th>Дисциплина</th>
+                <th>Дата</th>
+                <th>Оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Student?.LastName @item.Student?.FirstName (@item.Student?.StudentCardNumber)</td>
+                    <td>@item.Subject?.Name</td>
+                    <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        <span class="badge @(item.Value >= 4 ? "bg-success" : "bg-warning text-dark") p-2 fs-6">
+                            @item.Value
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

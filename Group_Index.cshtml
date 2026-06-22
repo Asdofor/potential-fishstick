@@ -1,0 +1,28 @@
+@model IEnumerable<EducationalMonitoringSystem.Models.Group>
+
+@{
+    ViewData["Title"] = "Список групп";
+}
+
+<div class="container mt-4">
+    <h2>Мониторинг образовательного процесса: Группы</h2>
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Название группы</th>
+                <th>Курс</th>
+                <th>Специальность</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.Name</strong></td>
+                    <td>@item.Course</td>
+                    <td>@item.Specialty</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

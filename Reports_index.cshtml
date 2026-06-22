@@ -1,0 +1,52 @@
+@model IEnumerable<EducationalMonitoringSystem.Models.Student>
+@{
+    ViewData["Title"] = "Аналитические отчеты";
+    var grades = ViewBag.Grades as List<EducationalMonitoringSystem.Models.Grade> ?? new List<EducationalMonitoringSystem.Models.Grade>();
+}
+
+<div class="container mt-4">
+    <h2>Аналитический отчет успеваемости</h2>
+    <p class="text-muted">Автоматический расчет среднего балла и определение зон риска студентов.</p>
+
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-warning">
+            <tr>
+                <th>Номер зачетки</th>
+                <th>ФИО Студента</th>
+                <th>Средний балл</th>
+                <th>Статус риска</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model)
+            {
+                var studentGrades = grades.Where(g => g.StudentId == student.Id).Select(g => g.Value).ToList();
+                double avgGrade = studentGrades.Any() ? studentGrades.Average() : 0.0;
+                
+                <tr>
+                    <td><strong>@student.StudentCardNumber</strong></td>
+                    <td>@student.LastName @student.FirstName @student.MiddleName</td>
+                    <td>@(avgGrade > 0 ? avgGrade.ToString("0.00") : "Нет оценок")</td>
+                    <td>
+                        @if (avgGrade >= 4.5)
+                        {
+                            <span class="badge bg-success">Отличник</span>
+                        }
+                        else if (avgGrade >= 3.5)
+                        {
+                            <span class="badge bg-info text-dark">Стабильно</span>
+                        }
+                        else if (avgGrade > 0)
+                        {
+                            <span class="badge bg-danger">В зоне риска (Низкий балл)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Данные отсутствуют</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
